@@ -2,12 +2,17 @@ package tela;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
+
+import entidade.Admin;
 import entidade.Usuario;
 import implement.UsuarioDAOImp;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
+import com.mysql.jdbc.CacheAdapterFactory;
+
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.JLayeredPane;
@@ -15,6 +20,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import javax.swing.JTabbedPane;
+import javax.swing.JPasswordField;
 
 public class teladesistema extends JFrame {
 
@@ -24,6 +31,10 @@ public class teladesistema extends JFrame {
 	private JTextField txtEndereco;
 	private JTextField txtTelefone;
 	private JTextField txtCargo;
+	private JTextField textField;
+	private JTextField textField_1;
+	private JTextField txtLogin;
+	private JPasswordField txtSenha;
 
 	/**
 	 * Launch the application.
@@ -46,76 +57,114 @@ public class teladesistema extends JFrame {
 	 */
 	public teladesistema() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 318, 287);
+		setBounds(100, 100, 377, 362);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
-		JLabel lblNome = new JLabel("Nome:");
-		lblNome.setBounds(22, 27, 67, 14);
-		contentPane.add(lblNome);
+		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
+		tabbedPane.setBounds(0, 0, 361, 324);
+		contentPane.add(tabbedPane);
 		
-		txtNome = new JTextField();
-		txtNome.setBounds(175, 24, 86, 20);
-		contentPane.add(txtNome);
-		txtNome.setColumns(10);
+		JPanel aba_login = new JPanel();
+		tabbedPane.addTab("Login", null, aba_login, null);
+		aba_login.setLayout(null);
 		
-		JLabel lblCpf = new JLabel("CPF:");
-		lblCpf.setBounds(22, 52, 67, 14);
-		contentPane.add(lblCpf);
+		JLabel lblLogin = new JLabel("Login:");
+		lblLogin.setBounds(29, 34, 46, 14);
+		aba_login.add(lblLogin);
 		
-		txtCPF = new JTextField();
-		txtCPF.setBounds(175, 49, 86, 20);
-		contentPane.add(txtCPF);
-		txtCPF.setColumns(10);
+		textField = new JTextField();
+		textField.setBounds(178, 31, 86, 20);
+		aba_login.add(textField);
+		textField.setColumns(10);
 		
-		JLabel lblTelefone = new JLabel("Telefone:");
-		lblTelefone.setBounds(22, 77, 67, 14);
-		contentPane.add(lblTelefone);
+		JLabel lblSenha = new JLabel("Senha:");
+		lblSenha.setBounds(29, 71, 46, 14);
+		aba_login.add(lblSenha);
 		
-		txtTelefone = new JTextField();
-		txtTelefone.setBounds(175, 74, 86, 20);
-		contentPane.add(txtTelefone);
-		txtTelefone.setColumns(10);
+		JPanel aba_cadastrar = new JPanel();
+		tabbedPane.addTab("Cadastrar", null, aba_cadastrar, null);
 		
-		JLabel lblEndereço = new JLabel("Endere\u00E7o:");
-		lblEndereço.setBounds(22, 102, 67, 14);
-		contentPane.add(lblEndereço);
+		aba_cadastrar.setVisible(false);
 		
-		txtEndereco = new JTextField();
-		txtEndereco.setBounds(175, 99, 86, 20);
-		contentPane.add(txtEndereco);
-		txtEndereco.setColumns(10);
-		
-		JLabel lblCargo = new JLabel("Cargo:");
-		lblCargo.setBounds(22, 127, 67, 14);
-		contentPane.add(lblCargo);
-		
-		txtCargo = new JTextField();
-		txtCargo.setBounds(175, 124, 86, 20);
-		contentPane.add(txtCargo);
-		txtCargo.setColumns(10);
-		
-		JButton btnCadastrar = new JButton("Cadastrar");
-		btnCadastrar.addActionListener(new ActionListener() {
+		JButton btnNewButton = new JButton("Logar");
+		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Usuario u= new Usuario();
-
-				u.setNome(txtNome.getText());
-				u.setCpf(txtCPF.getText());
-				u.setTelefone(txtTelefone.getText());
-				u.setEndereco(txtEndereco.getText());
-				u.setCargo(txtCargo.getText());
+				Admin adm = new Admin();
 				
-				if (new UsuarioDAOImp().salvar(u)) {
-					JOptionPane.showMessageDialog(null, "Dados gravados com sucesso");
+				adm.setLogin(txtLogin.getText());
+				adm.setSenha(txtSenha.getPassword().toString());
+				
+				if (new UsuarioDAOImp().checkLogin(adm)) {
+//					new tela 
+					aba_cadastrar.setVisible(true);
 				} else {
-					JOptionPane.showMessageDialog(null, "Falha na gravação");
+					JOptionPane.showMessageDialog(null, "Falha ao logar");
 				}
 			}
 		});
-		btnCadastrar.setBounds(79, 185, 136, 23);
-		contentPane.add(btnCadastrar);
+		
+		txtSenha = new JPasswordField();
+		txtSenha.setBounds(178, 68, 86, 20);
+		aba_login.add(txtSenha);
+		btnNewButton.setBounds(109, 115, 112, 20);
+		aba_login.add(btnNewButton);
+		
+	
+		
+		JLabel lblNome = new JLabel("Nome:");
+		lblNome.setBounds(44, 14, 86, 14);
+		aba_cadastrar.add(lblNome);
+		
+		txtNome = new JTextField();
+		txtNome.setBounds(173, 11, 86, 20);
+		aba_cadastrar.add(txtNome);
+		txtNome.setColumns(10);
+		
+		JLabel lblCpf = new JLabel("CPF:");
+		lblCpf.setBounds(44, 45, 86, 14);
+		aba_cadastrar.add(lblCpf);
+		
+		txtCPF = new JTextField();
+		txtCPF.setBounds(173, 42, 86, 20);
+		aba_cadastrar.add(txtCPF);
+		txtCPF.setColumns(10);
+		
+		JLabel lblTelefone = new JLabel("Telefone:");
+		lblTelefone.setBounds(44, 76, 86, 14);
+		aba_cadastrar.add(lblTelefone);
+		
+		txtTelefone = new JTextField();
+		txtTelefone.setBounds(173, 73, 86, 20);
+		aba_cadastrar.add(txtTelefone);
+		txtTelefone.setColumns(10);
+		
+		JLabel lblEndereço = new JLabel("Endere\u00E7o:");
+		lblEndereço.setBounds(44, 107, 86, 14);
+		aba_cadastrar.add(lblEndereço);
+		
+		txtEndereco = new JTextField();
+		txtEndereco.setBounds(173, 104, 86, 20);
+		aba_cadastrar.add(txtEndereco);
+		txtEndereco.setColumns(10);
+		
+		JLabel lblCargo = new JLabel("Cargo:");
+		lblCargo.setBounds(44, 138, 86, 14);
+		aba_cadastrar.add(lblCargo);
+		
+		txtCargo = new JTextField();
+		txtCargo.setBounds(173, 135, 86, 20);
+		aba_cadastrar.add(txtCargo);
+		txtCargo.setColumns(10);
+		
+		JButton btnCadastrar = new JButton("Cadastrar");
+		btnCadastrar.setBounds(91, 209, 129, 23);
+		aba_cadastrar.add(btnCadastrar);
+		
+		
+		
+		
 	}
 }
